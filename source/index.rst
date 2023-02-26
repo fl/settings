@@ -3,4 +3,9 @@ Settings
 
 Customizing included and additional applications for different operating systems
 
-read it at https://settings.readthedocs.io
+Contents
+--------
+
+.. toctree::
+
+   win11

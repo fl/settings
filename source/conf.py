@@ -2,9 +2,9 @@
 
 # -- Project information
 
-project = 'Lumache'
-copyright = '2021, Graziella'
-author = 'Graziella'
+project = 'Settings'
+copyright = '2023, F. Kley'
+author = 'Florenz <fl@hacker-stueberl.de>'
 
 release = '0.1'
 version = '0.1.0'
