@@ -44,6 +44,12 @@ Trusting a MITM proxy
 
 Some environments mandate that users submit to having their traffic inspected at the proxy, including TLS traffic. To achieve that, those sites usually configure their proxy to act as a CA to the internal client, and as a normal SSL client to servers offering the requested service on the public internet. For this configuration to work without user interaction (with the exception of server using HSTS), administrators deploy the CA certificate of the proxy to the trust chain of managed clients. On  a Windows machine, it will be visible in the Certificates MMC snap-in (the tool can be started as ``C:\Windows\System32\certmgr.msc``) in the folder "Trusted Root Certificates".
 
+For Python tools, such as `pip` or `pip-compile`, configure the CA cert to be trusted needs to be configured with the option ``--cert``::
+
+    pip --cert C:\certs\cacert.pem install pip-tools
+
+For Java applications, import the CA certificate in the JRE or JDK certificate store.
+
 
 
 
