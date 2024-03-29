@@ -3,11 +3,11 @@
 # -- Project information
 
 project = 'Settings'
-copyright = '2023, F. Kley'
+copyright = '2023-2024, contributors to this project'
 author = 'Florenz <fl@hacker-stueberl.de>'
 
-release = '0.1'
-version = '0.1.0'
+release = '1.0'
+version = '1.0.0a'
 
 # -- General configuration
 
