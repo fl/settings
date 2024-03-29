@@ -14,6 +14,14 @@ Contents
    stacks/*
 
 .. toctree::
+   :caption: Linux
+   :hidden:
+   :maxdepth: 1
+   :glob:
+
+   linux/*
+
+.. toctree::
    :caption: Windows
    :hidden:
    :maxdepth: 1
