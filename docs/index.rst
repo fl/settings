@@ -5,6 +5,13 @@ Customizing included and additional applications for different operating systems
 
 Contents
 --------
+.. toctree::
+   :caption: Application stacks
+   :hidden:
+   :maxdepth: 1
+   :glob:
+
+   stacks/*
 
 .. toctree::
    :caption: Windows
@@ -12,5 +19,4 @@ Contents
    :maxdepth: 1
    :glob:
 
-   win11
-   wsl
+   windows/*
