@@ -44,7 +44,13 @@ Die Reihenfolge der Installation leiten wir aus dem Kapitel `Installation Order`
 Elasticsearch
 *************
 
-Wir beginnen mit der Installation von Elasticsearch. Dazu verwenden wir eine Debian 12 (Bookworkm) VM (Standard-Installation, in der Paket-Auswahl *tasksel* nur "SSH Server" ausgewaehlt).
+Wir beginnen mit der Installation von Elasticsearch. Dazu verwenden wir eine Debian 12 (Bookworm) VM (Standard-Installation, in der Paket-Auswahl *tasksel* nur "SSH Server" ausgewaehlt). Aus Bequemlichkeit installieren wir zuerst **screen**::
+
+    apt install screen
+
+weil wir damit die Shell-Session in der wir installieren nicht verlieren wenn die connection abbricht.
+
+
 
 
 
