@@ -527,7 +527,7 @@ und curl::
 
 und auch remote sehen wir dass der port 9200/tcp jetzt offen ist::
 
-    root@mur-devkibana:~# nmap stardust
+    root@devkibana:~# nmap stardust
     Starting Nmap 7.80 ( https://nmap.org ) at 2023-04-19 12:47 CEST
     Nmap scan report for stardust (10.143.1.127)
     Host is up (0.00024s latency).
@@ -574,7 +574,7 @@ Elastic docs dazu: https://www.elastic.co/guide/en/elasticsearch/reference/curre
 zweiter Knoten
 --------------
 
-- proxy/mur certificates konfiguriert
+- proxy + certificates konfiguriert
 - elastic key vertraut
 - apt update & apt install elasticsearch
 
