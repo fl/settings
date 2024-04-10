@@ -31,3 +31,33 @@ Wir betrachten zuerst screen.
 *******************************
 Screen, der console multiplexer
 *******************************
+
+Wenn screen noch nicht installiert ist, mit ``apt`` installieren::
+
+    apt install screen
+
+Mit dem Aufruf von ``screen`` (ohne Optionen) startet
+
+* das screen Backend
+* eine neue Shell session unter der Kontrolle des Backends
+* ein screen Frontend
+
+als user ``swadm`` gestartet schaut das so aus::
+
+    fl@cornus:~$ pstree -t -a -p swadm
+    bash,9916
+      └─screen,9961
+          └─screen,9962
+              └─bash,9963
+
+In der laufenden Shell (PID 9916) ruft der Benutzer swadm ``screen`` auf. Als erstes startet das screen backend (PID 9961), dann das screen frontend (PID 9962), dann eine neue login shell. Als Benutzer sieht man erstmal keinen Unterschied zwischen einer "normalen" Shell und einer Shell unter der Kontrolle von screen::
+
+    root@cornus:~# su - swadm
+    swadm@cornus:~$ screen
+    swadm@cornus:~$ echo $$
+    9963
+    swadm@cornus:~$ exit
+    [screen is terminating]
+    swadm@cornus:~$ echo $$
+    9916
+    swadm@cornus:~$
