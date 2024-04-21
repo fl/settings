@@ -1,0 +1,9 @@
+#cloud-config
+# vim: syntax=yaml
+users:
+  - name: debian
+    ssh_authorized_keys:
+      - ssh-rsa <SSHKEY>
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    groups: sudo
+    shell: /bin/bash
