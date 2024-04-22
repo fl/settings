@@ -115,245 +115,39 @@ Nun konfigurieren wir diesen key als vertrauenswuerdig, aber nur fuer die Reposi
 
     root@sequoia:~# echo "deb [signed-by=/usr/local/share/keyrings/elastic.co-APT-signingkey.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" > /etc/apt/sources.list.d/elastic-8.x.list
 
-TODO --> EYECATCHER EDITMARK <--
-
 package-Information auffrischen::
 
     root@stardust:~# apt update
-    Hit:1 http://security.debian.org/debian-security bullseye-security/updates InRelease
-    Hit:2 http://ftp.de.debian.org/debian bullseye InRelease
-    Err:3 https://artifacts.elastic.co/packages/8.x/apt stable InRelease
-      Certificate verification failed: The certificate is NOT trusted. The certificate issuer is unknown.  Could not handshake: Error in the certificate verification. [IP: 127.0.0.1 3128]
-    Get:4 http://ftp.de.debian.org/debian bullseye-updates InRelease [44.1 kB]
-    Fetched 44.1 kB in 0s (104 kB/s)
-    Reading package lists... Done
-    Building dependency tree... Done
-    Reading state information... Done
-    All packages are up to date.
-    W: Failed to fetch https://artifacts.elastic.co/packages/8.x/apt/dists/stable/InRelease  Certificate verification failed: The certificate is NOT trusted. The certificate issuer is unknown.  Could not handshake: Error in the certificate verification. [IP: 127.0.0.1 3128]
-    W: Some index files failed to download. They have been ignored, or old ones used instead.
-
-aber halt - haessliche Fehler beim Update, deswegen: Exkurs:
-
-stardust laeuft noch ueber den proxy, bzw. genauer: erst ueber den lokalen cntlm Proxy und damnn ueber den
-"echten" proxy.ubrspace.de:8080
-
-alle TLS-connections nach draussen muessen also den "alten" Zertifikaten vom proxy vertrauen:
-
-root@stardust:~# ls -1 /usr/share/ca-certificates/
-/usr/share/ca-certificates/Proxy_Certificate.crt
-/usr/share/ca-certificates/MyRootCA_Certificate.crt
-
-damit die von Debian-Tools verwendet werden, muessen sie erstmal in dem diretory sein, dann in der config-Datei /etc/ca-certificates.conf und dann muss man noch einen reconfigure ausfuehren
-
-root@stardust:~# ls -1 /usr/local/share/ca-certificates/ >> /etc/ca-certificates.conf
-
-jetzt sind die Proxy-Zertifikate sichtbar in /etc/ssl/certs und werden auch in das "Cert bundle" eingepackt. Manche Applikationen unterstuetzen nur "cert bundles", d.h. alle Zertifikate in einem file, und nicht "cert directories", als EInzel-Zertifikate in einem directory
-
-und jetzt funktionierts, automagically::
-
-    root@stardust:~# apt update
-    Hit:1 http://security.debian.org/debian-security bullseye-security/updates InRelease
-    Hit:2 http://ftp.de.debian.org/debian bullseye InRelease
-    Get:3 https://artifacts.elastic.co/packages/8.x/apt stable InRelease [10.4 kB]
-    Hit:4 http://ftp.de.debian.org/debian bullseye-updates InRelease
-    Get:5 https://artifacts.elastic.co/packages/8.x/apt stable/main amd64 Packages [48.4 kB]
-    Fetched 58.8 kB in 0s (156 kB/s)
-    Reading package lists... Done
-    Building dependency tree... Done
-    Reading state information... Done
-    All packages are up to date.
 
 mal nach Elastic suchen::
 
-    root@stardust:~# apt search elastic
-    Sorting... Done
-    Full Text Search... Done
-    apm-server/stable 8.7.0 amd64
-      Elastic APM Server
 
-    awscli/stable 1.19.1-1 all
-      Universal Command Line Environment for AWS
+weil Elastic aus irgendwelchen Gruenden directory-index abgeschaltet hat, muessen wir erfinderisch werden, umd das repo zu spiegeln, damit wir es ohne proxy/internetz installieren koennen. Elastic gibt als repo URL selbst an: ``https://artifacts.elastic.co/packages/8.x/apt``. Nachdem wir die package-Struktur eines Debian repos kennen, bedeutet dies, dass wir ein ``Packages.gz`` fuer unsere Plattform finden unter ``<REPO-URL>/dists/stable/main/binary-amd64/Packages.gz``. Und genau damit probieren wir es:
 
-    cba/stable 0.3.6-5 amd64
-      Continuous Beam Analysis
+``wget ``https://artifacts.elastic.co/packages/8.x/apt/dists/stable/main/binary-amd64/Packages.gz``
 
-    cp2k/stable 8.1-9 amd64
-      Ab Initio Molecular Dynamics
+der mirror stellt laut ``Packages.gz`` diese files bereit::
 
-    elastalert/stable 0.2.4-1 all
-      easy and flexible alerting with Elasticsearch
+    fl@sequoia:~/Downloads$ zcat Packages.gz | grep '^Filename: '
+    [...]
+    Filename: pool/main/e/elasticsearch/elasticsearch-8.13.1-amd64.deb
+    Filename: pool/main/e/elasticsearch/elasticsearch-8.13.0-amd64.deb
+    Filename: pool/main/e/elasticsearch/elasticsearch-8.12.2-amd64.deb
+    Filename: pool/main/e/elasticsearch/elasticsearch-8.12.1-amd64.deb
+    [...]
 
-    elastalert-doc/stable 0.2.4-1 all
-      easy and flexible alerting with Elasticsearch (documentation)
+der Pfad ist relativ zur REPO-URL, wir koennen uns also ein mirror-skript bauen:
 
-    elastic-agent/stable 8.7.0 amd64
-      Agent manages other beats based on configuration provided.
+PREFIX: ``https://artifacts.elastic.co/packages/8.x/apt/``
+FILEPATH (Beispiel) ``pool/main/e/elasticsearch/elasticsearch-8.12.1-amd64.deb``
 
-    elasticsearch/stable 8.7.0 amd64
-      Distributed RESTful search engine built for the cloud
+ein download-link waere also:
 
-    elasticsearch-curator/stable 5.8.1-1 all
-      command-line tool for managing Elasticsearch time-series indices
+``https://artifacts.elastic.co/packages/8.x/apt/pool/main/e/elasticsearch/elasticsearch-8.12.1-amd64.deb``
 
-    fenicsx-performance-tests/stable 0.0~git20210119.80e82ac-1 amd64
-      Performance test codes for FEniCS/DOLFIN-X (binaries)
+ausprobieren: geht! hier gehts morgen weiter.
 
-    fenicsx-performance-tests-source/stable 0.0~git20210119.80e82ac-1 all
-      Performance test codes for FEniCS/DOLFIN-X (source)
-
-    filebeat/stable 8.7.0 amd64
-      Filebeat sends log files to Logstash or directly to Elasticsearch.
-
-    golang-github-denverdino-aliyungo-dev/stable 0.0~git20180921.13fa8aa-2 all
-      Go SDK for Aliyun (Alibaba Cloud)
-
-    golang-github-jedisct1-dlog-dev/stable 0.7-1 all
-      Super simple logger for Go
-
-    golang-github-timberio-go-datemath-dev/stable 0.1.0+git20200323.74ddef6-2 all
-      Go library for parsing Elasticsearch datemath expressions
-
-    golang-gopkg-olivere-elastic.v2-dev/stable 2.0.12-2 all
-      Elasticsearch client for Golang
-
-    golang-gopkg-olivere-elastic.v3-dev/stable 3.0.41-1.1 all
-      Elasticsearch client for Golang
-
-    golang-gopkg-olivere-elastic.v5-dev/stable 5.0.83-1 all
-      Elasticsearch client for Golang
-
-    heartbeat-elastic/stable 8.7.0 amd64
-      Ping remote services for availability and log results to Elasticsearch or send to Logstash.
-
-    ibverbs-providers/stable 33.2-1 amd64
-      User space provider drivers for libibverbs
-
-    kibana/stable 8.7.0 amd64
-      Explore and visualize your Elasticsearch data
-
-    libcatmandu-perl/stable 1.2012-2 all
-      metadata toolkit
-
-    libcatmandu-store-elasticsearch-perl/stable 1.0202-1 all
-      searchable store backed by Elasticsearch
-
-    libnet-amazon-ec2-perl/stable 0.36-1 all
-      Perl interface to the Amazon Elastic Compute Cloud (EC2)
-
-    libopenhft-chronicle-bytes-java/stable 1.1.15-2 all
-      OpenHFT byte buffer library
-
-    librheolef-dev/stable 7.1-6 amd64
-      efficient Finite Element environment - development files
-
-    librheolef1/stable 7.1-6 amd64
-      efficient Finite Element environment - shared library
-
-    librust-tabwriter+ansi-formatting-dev/stable 1.2.1-1 amd64
-      Elastic tabstops - feature "ansi_formatting"
-
-    librust-tabwriter+lazy-static-dev/stable 1.2.1-1 amd64
-      Elastic tabstops - feature "lazy_static"
-
-    librust-tabwriter+regex-dev/stable 1.2.1-1 amd64
-      Elastic tabstops - feature "regex"
-
-    librust-tabwriter-dev/stable 1.2.1-1 amd64
-      Elastic tabstops - Rust source code
-
-    libsearch-elasticsearch-client-1-0-perl/stable 6.81-1 all
-      Module to add client support for Elasticsearch 1.x
-
-    libsearch-elasticsearch-client-2-0-perl/stable 6.81-1 all
-      Thin client with full support for Elasticsearch 2.x APIs
-
-    libsearch-elasticsearch-perl/stable 7.30-1 all
-      Perl client for Elasticsearch
-
-    libtrilinos-ml-dev/stable 12.18.1-2 amd64
-      multigrid preconditioning - development files
-
-    libtrilinos-ml12/stable 12.18.1-2 amd64
-      multigrid preconditioning - runtime files
-
-    nastran/stable 0.1.95-2 amd64
-      NASA Structural Analysis System
-
-    nwchem/stable 7.0.2-1 amd64
-      High-performance computational chemistry software
-
-    packetbeat/stable 8.7.0 amd64
-      Packetbeat analyzes network traffic and sends the data to Elasticsearch.
-
-    php-horde-elasticsearch/stable 1.0.4-6 all
-      Horde ElasticSearch client
-
-    prometheus-elasticsearch-exporter/stable 1.1.0+ds-2+b5 amd64
-      Prometheus exporter for various metrics about Elasticsearch
-
-    python-django-haystack-doc/stable 3.0-1 all
-      modular search for Django (Documentation)
-
-    python-elasticsearch-curator-doc/stable 5.8.1-1 all
-      Python library for managing Elasticsearch time-series indices (documentation)
-
-    python-elasticsearch-doc/stable 7.1.0-3 all
-      Python client for Elasticsearch (Documentation)
-
-    python3-boto/stable 2.49.0-3 all
-      Python interface to Amazon's Web Services - Python 3.x
-
-    python3-django-haystack/stable 3.0-1 all
-      modular search for Django (Python version)
-
-    python3-elasticsearch/stable 7.1.0-3 all
-      Python client for Elasticsearch (Python3 version)
-
-    python3-elasticsearch-curator/stable 5.8.1-1 all
-      Python 3 library for managing Elasticsearch time-series indices
-
-    python3-eliot/stable 1.11.0-1 all
-      logging library for Python that tells you why things happen
-
-    r-cran-glmnet/stable 4.1-2 amd64
-      Lasso and Elastic-Net Regularized Generalized Linear Models
-
-    resource-agents/stable 1:4.7.0-1 amd64
-      Cluster Resource Agents
-
-    rheolef/stable 7.1-6 amd64
-      efficient Finite Element environment
-
-    rheolef-doc/stable 7.1-6 all
-      efficient Finite Element environment - documentation
-
-    rsyslog-elasticsearch/stable,stable-security 8.2102.0-2+deb11u1 amd64
-      Elasticsearch output plugin for rsyslog
-
-    ruby-amazon-ec2/stable 0.9.17-3.1 all
-      Ruby library for accessing Amazon EC2
-
-    ruby-elasticsearch/stable 6.8.2-2 all
-      Ruby client for connecting to an Elasticsearch cluster
-
-    ruby-elasticsearch-api/stable 6.8.2-2 all
-      Ruby implementation of the Elasticsearch REST API
-
-    ruby-elasticsearch-model/stable 7.0.0-2 all
-      ActiveModel/Record integrations for Elasticsearch
-
-    ruby-elasticsearch-rails/stable 7.1.1-2 all
-      Ruby on Rails integrations for Elasticsearch
-
-    ruby-elasticsearch-transport/stable 6.8.2-2 all
-      low-level Ruby client for connecting to Elasticsearch
-
-    ruby-rails-assets-jakobmattsson-jquery-elastic/stable 1.6.11~dfsg-1.1 all
-      jquery-elastic plugin for rails applications
-
-    xball/stable 3.0.1-2 amd64
-      Simulate bouncing balls in a window
+TODO --> EYECATCHER EDITMARK <--
 
 und genau das werden wir jetzt installieren::
 
