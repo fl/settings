@@ -46,66 +46,26 @@ Die Reihenfolge der Installation leiten wir aus dem Kapitel `Installation Order`
 Elasticsearch
 *************
 
-Wir beginnen mit der Installation von Elasticsearch. Dazu verwenden wir eine Debian 12 (Bookworm) VM (Standard-Installation, in der Paket-Auswahl *tasksel* nur "SSH Server" ausgewaehlt). Aus Bequemlichkeit installieren wir zuerst **screen**::
-
-    apt install screen
-
-weil wir damit die Shell-Session in der wir installieren nicht verlieren wenn die connection abbricht.
-
-
-**TODO - das ist vom letzten install auf bullseye mit Elasticsearch 8.7 uebernommen, update me auf 8.13**
+Wir beginnen mit der Installation von Elasticsearch. Dazu verwenden wir eine Debian 12 (Bookworm) VM (Standard-Installation, in der Paket-Auswahl *tasksel* nur "SSH Server" ausgewaehlt). Aus Bequemlichkeit installieren wir zuerst **screen**, damit wir damit die Shell-Session in der wir installieren nicht verlieren wenn die connection abbricht.
 
 wir sind auf Debian 11::
 
     root@stardust:~# cat /etc/debian_version
     11.6
 
-also verwenden wir das deb-Paket: https://www.elastic.co/guide/en/elasticsearch/reference/8.7/deb.html
+also verwenden wir das deb-Paket: https://www.elastic.co/guide/en/elasticsearch/reference/8.13/deb.html
 
 package signing key installieren
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-beim download macht der lokale wget Zicken, obwohl das environment richtig gesetzt ist::
-
-    root@stardust:~# env | grep prox
-    http_proxy=http://localhost:3128
-
-    root@stardust:~# man wget
-    root@stardust:~# systemctl status cntlm
-    ● cntlm.service - LSB: Authenticating HTTP accelerator for NTLM secured proxies
-         Loaded: loaded (/etc/init.d/cntlm; generated)
-         Active: active (running) since Wed 2023-04-19 09:34:54 CEST; 1h 46min ago
-           Docs: man:systemd-sysv-generator(8)
-        Process: 1271 ExecStart=/etc/init.d/cntlm start (code=exited, status=0/SUCCESS)
-          Tasks: 1 (limit: 19091)
-         Memory: 1.0M
-            CPU: 284ms
-         CGroup: /system.slice/cntlm.service
-                 └─1289 /usr/sbin/cntlm -U cntlm -P /var/run/cntlm/cntlm.pid
-
-    Apr 19 09:34:54 stardust cntlm[1288]: New ACL rule: deny 0.0.0.0/0
-    Apr 19 09:34:54 stardust cntlm[1288]: Workstation name used: stardust
-    Apr 19 09:34:54 stardust cntlm[1271]: Starting CNTLM Authentication Proxy: cntlm.
-    Apr 19 09:34:54 stardust cntlm[1288]: Using following NTLM hashes: NTLMv2(0) NT(1) LM(1)
-    Apr 19 09:34:54 stardust systemd[1]: Started LSB: Authenticating HTTP accelerator for NTLM se>
-    Apr 19 09:34:54 stardust cntlm[1289]: Daemon ready
-    Apr 19 09:34:54 stardust cntlm[1289]: Changing uid:gid to 105:65534 - Success
-    Apr 19 11:20:09 stardust cntlm[1289]: Using proxy proxyueberspace.de:8080
-    Apr 19 11:20:09 stardust cntlm[1289]: 127.0.0.1 GET http://security.debian.org/debian-securit>
-    Apr 19 11:20:10 stardust cntlm[1289]: 127.0.0.1 GET http://security.debian.org/debian-securit>
+Elastic signiert seine APT-Pakete mit einem eigenen key, den wir fuer das Elastic-Repository als vertrauenswuerdig konfigurieren. Dazu laden wir den key zuerst von der Elastic-Seite::
 
     root@stardust:~# wget https://artifacts.elastic.co/GPG-KEY-elasticsearch
-    --2023-04-19 11:21:54--  https://artifacts.elastic.co/GPG-KEY-elasticsearch
-    Resolving artifacts.elastic.co (artifacts.elastic.co)... 34.120.127.130, 2600:1901:0:1d7::
-    Connecting to artifacts.elastic.co (artifacts.elastic.co)|34.120.127.130|:443... ^C
 
-workaround: lokal den GPG key fuer das Elastic repository runterladen und auf den deve3 kopieren
+jetzt haben wir den key lokal, aber "ascii armored", im PEM-Format::
 
-jetzt haben wir den key lokal, aber "ascii armored"::
-
-    root@stardust:~# cat GPG-KEY-elasticsearch
+    fl@sequoia:~$ cat GPG-KEY-elasticsearch
     -----BEGIN PGP PUBLIC KEY BLOCK-----
-    Version: GnuPG v2.0.14 (GNU/Linux)
 
     mQENBFI3HsoBCADXDtbNJnxbPqB1vDNtCsqhe49vFYsZN9IOZsZXgp7aHjh6CJBD
     A+bGFOwyhbd7at35jQjWAw1O3cfYsKAmFy+Ar3LHCMkV3oZspJACTIgCrwnkic/9
@@ -114,53 +74,48 @@ jetzt haben wir den key lokal, aber "ascii armored"::
     1YK/aY5qhoLNhp9G/HxhcSVCkLq8SStj1ZZ1S9juBPoXV1ZWNbxFNGwOh/NYGldD
     2kmBf3YgCqeLzHahsAEpvAm8TBa7Q9W21C8vABEBAAG0RUVsYXN0aWNzZWFyY2gg
     KEVsYXN0aWNzZWFyY2ggU2lnbmluZyBLZXkpIDxkZXZfb3BzQGVsYXN0aWNzZWFy
-    Y2gub3JnPokBOAQTAQIAIgUCUjceygIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgEC
-    F4AACgkQ0n1mbNiOQrRzjAgAlTUQ1mgo3nK6BGXbj4XAJvuZDG0HILiUt+pPnz75
-    nsf0NWhqR4yGFlmpuctgCmTD+HzYtV9fp9qW/bwVuJCNtKXk3sdzYABY+Yl0Cez/
-    7C2GuGCOlbn0luCNT9BxJnh4mC9h/cKI3y5jvZ7wavwe41teqG14V+EoFSn3NPKm
-    TxcDTFrV7SmVPxCBcQze00cJhprKxkuZMPPVqpBS+JfDQtzUQD/LSFfhHj9eD+Xe
-    8d7sw+XvxB2aN4gnTlRzjL1nTRp0h2/IOGkqYfIG9rWmSLNlxhB2t+c0RsjdGM4/
-    eRlPWylFbVMc5pmDpItrkWSnzBfkmXL3vO2X3WvwmSFiQbkBDQRSNx7KAQgA5JUl
-    zcMW5/cuyZR8alSacKqhSbvoSqqbzHKcUQZmlzNMKGTABFG1yRx9r+wa/fvqP6OT
-    RzRDvVS/cycws8YX7Ddum7x8uI95b9ye1/Xy5noPEm8cD+hplnpU+PBQZJ5XJ2I+
-    1l9Nixx47wPGXeClLqcdn0ayd+v+Rwf3/XUJrvccG2YZUiQ4jWZkoxsA07xx7Bj+
-    Lt8/FKG7sHRFvePFU0ZS6JFx9GJqjSBbHRRkam+4emW3uWgVfZxuwcUCn1ayNgRt
-    KiFv9jQrg2TIWEvzYx9tywTCxc+FFMWAlbCzi+m4WD+QUWWfDQ009U/WM0ks0Kww
-    EwSk/UDuToxGnKU2dQARAQABiQEfBBgBAgAJBQJSNx7KAhsMAAoJENJ9ZmzYjkK0
-    c3MIAIE9hAR20mqJWLcsxLtrRs6uNF1VrpB+4n/55QU7oxA1iVBO6IFu4qgsF12J
-    TavnJ5MLaETlggXY+zDef9syTPXoQctpzcaNVDmedwo1SiL03uMoblOvWpMR/Y0j
-    6rm7IgrMWUDXDPvoPGjMl2q1iTeyHkMZEyUJ8SKsaHh4jV9wp9KmC8C+9CwMukL7
-    vM5w8cgvJoAwsp3Fn59AxWthN3XJYcnMfStkIuWgR7U2r+a210W6vnUxU4oN0PmM
-    cursYPyeV0NX/KQeUeNMwGTFB6QHS/anRaGQewijkrYYoTNtfllxIu9XYmiBERQ/
-    qPDlGRlOgVTd9xUfHFkzB52c70E=
-    =92oX
+    Y2gub3JnPokBTgQTAQgAOAIbAwIXgBYhBEYJWsyFSFgsGiaZqdJ9ZmzYjkK0BQJk
+    9vrZBQsJCAcDBRUKCQgLBRYCAwEAAh4FAAoJENJ9ZmzYjkK00hoH+wYXZKgVb3Wv
+    4AA/+T1IAf7edwgajr58bEyqds6/4v6uZBneUaqahUqMXgLFRX5dBSrAS7bvE/jx
+    +BBQx+rpFGxSwvFegRevE1zAGVtpgkFQX0RpRcKSmksucSBxikR/dPn9XdJSEVa8
+    vPcs11V+2E5tq3LEP14zJL4MkJKQF0VJl5UUmKLS7U2F/IB5aXry9UWdMTnwNntX
+    kl2iDaViYF4MC6xTS24uLwND2St0Jvjt+xGEwbdBVvp+UZ/kG6IGkYM5eWGPuok/
+    DHvjUdwTfyO9b5xGbqn5FJ3UFOwB/nOSFXHM8rsHRT/67gHcIl8YFqSQXpIkk9D3
+    dCY+KieW0ue5AQ0EUjceygEIAOSVJc3DFuf3LsmUfGpUmnCqoUm76Eqqm8xynFEG
+    ZpczTChkwARRtckcfa/sGv376j+jk0c0Q71Uv3MnMLPGF+w3bpu8fLiPeW/cntf1
+    8uZ6DxJvHA/oaZZ6VPjwUGSeVydiPtZfTYsceO8Dxl3gpS6nHZ9Gsnfr/kcH9/11
+    Ca73HBtmGVIkOI1mZKMbANO8cewY/i7fPxShu7B0Rb3jxVNGUuiRcfRiao0gWx0U
+    ZGpvuHplt7loFX2cbsHFAp9WsjYEbSohb/Y0K4NkyFhL82MfbcsEwsXPhRTFgJWw
+    s4vpuFg/kFFlnw0NNPVP1jNJLNCsMBMEpP1A7k6MRpylNnUAEQEAAYkBNgQYAQgA
+    IAIbDBYhBEYJWsyFSFgsGiaZqdJ9ZmzYjkK0BQJk9vsHAAoJENJ9ZmzYjkK0hWsH
+    /ArKtn12HM3+41zYo9qO4rTri7+IYTjSB/JDTOusZgZLd/HCp1xQo4SI2Eur3Rtx
+    USMWK1LEeBzsjwDT9yVceYekrBEqUVyRMSVYj+UeZK2s4LbXm9b4jxXVtaivmkMA
+    jtznndrD7kmm8ak+UsZplf6p6uZS9TZ9hjwoMmw5oMaS6TZkLT4KYGWeyzHJSUBX
+    YikY6vssDQu4SJ07m1f4Hz81J39QOcHln5I5HTK8Rh/VUFcxNnGg9360g55wWpiF
+    eUTeMyoXpOtffiUhiOtbRYsmSYC0D4Fd5yJnO3n1pwnVVVsM7RAC22rc5j/Dw8dR
+    GIHikRcYWeXTYW7veewK5Ss=
+    =ftS0
     -----END PGP PUBLIC KEY BLOCK-----
 
-damit APT ihn verwenden kann muessen wir ihn in das GPG-Keyring Format konvertieren::
+damit APT ihn verwenden kann muessen wir ihn auspacken (=in das GPG-Keyring Format konvertieren)::
 
-    root@stardust:~# gpg --dearmor < GPG-KEY-elasticsearch > /usr/local/share/
+    fl@sequoia:~gpg --dearmor < GPG-KEY-elasticsearch > elastic.co-APT-signingkey.gpg
 
-Format kontrollieren::
+Mit gpg koennen wir den Inhalt kontrollieren::
 
-    root@stardust:~# file /usr/share/keyrings/elasticsearch-keyring_2013-09-16.gpg
-    /usr/share/keyrings/elasticsearch-keyring_2013-09-16.gpg: PGP/GPG key public ring (v4) created Mon Sep 16 17:07:54 2013 RSA (Encrypt or Sign) 2048 bits MPI=0xd70ed6cd267c5b3e...
-
-schaut gut aus! Inhalt kontrollieren::
-
-    root@stardust:~# gpg --show-keys < /usr/share/keyrings/elasticsearch-keyring_2013-09-16.gpg
+    fl@sequoia:~$ gpg --show-keys elastic.co-APT-signingkey.gpg
     pub   rsa2048 2013-09-16 [SC]
           46095ACC8548582C1A2699A9D27D666CD88E42B4
     uid                      Elasticsearch (Elasticsearch Signing Key) <dev_ops@elasticsearch.org>
     sub   rsa2048 2013-09-16 [E]
 
-jetzt das APT repo konfigurieren, und in der Kommandozeile den Pfad fuer den Elastic key anpassen::
+Nun konfigurieren wir diesen key als vertrauenswuerdig, aber nur fuer die Repositories, die Elastic verwaltet. Das steuern wir durch ``[signed-by=<pfad-zum-key>]``  fuer eine deb-Zeile. Wir wollen ihn ganz explizit *nicht* nach ``/etc/apt/trusted.gpg.d/`` kopieren, weil dann alle Pakete aus allen Quellen mit dem Elastic-Key signiert sein duerften. Dazu legen wir den keyring nach ``/usr/local/share/keyrings/`` und verwenden diesen Pfad im sources file::
 
-    root@stardust:~# echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring_2013-09-16.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" > /etc/apt/sources.list.d/elastic-8.x.list
+    root@sequoia:~# cp ~fl/elastic.co-APT-signingkey.gpg /usr/local/share/keyrings/
 
+    root@sequoia:~# echo "deb [signed-by=/usr/local/share/keyrings/elastic.co-APT-signingkey.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" > /etc/apt/sources.list.d/elastic-8.x.list
 
-
-root@stardust:~# cat /etc/apt/sources.list.d/elastic-8.x.list
-deb [signed-by=/usr/share/keyrings/elasticsearch-keyring_2013-09-16.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main
+TODO --> EYECATCHER EDITMARK <--
 
 package-Information auffrischen::
 
