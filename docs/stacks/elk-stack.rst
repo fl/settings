@@ -121,6 +121,8 @@ package-Information auffrischen::
 
 mal nach Elastic suchen::
 
+Elastic-Pakete mit lokalem mirror bereitstellen
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 weil Elastic aus irgendwelchen Gruenden directory-index abgeschaltet hat, muessen wir erfinderisch werden, umd das repo zu spiegeln, damit wir es ohne proxy/internetz installieren koennen. Elastic gibt als repo URL selbst an: ``https://artifacts.elastic.co/packages/8.x/apt``. Nachdem wir die package-Struktur eines Debian repos kennen, bedeutet dies, dass wir ein ``Packages.gz`` fuer unsere Plattform finden unter ``<REPO-URL>/dists/stable/main/binary-amd64/Packages.gz``. Und genau damit probieren wir es:
 
