@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 POOL="vmstore"
 POOLDIR="/usr/local/var/vmstore"
@@ -38,3 +38,14 @@ virt-install \
   --controller usb,model=none \
   --network bridge=virbr0,model=virtio \
   --autoconsole none
+
+# kludge time: wir warten einfach 45s wiel wir denken dass der guest-agent dann dienstbereit ist
+TIMER="45"
+
+while [[ "0" -lt "$TIMER" ]]; do
+  /usr/bin/sleep 1
+  let TIMER--
+  echo "noch $TIMER s..."
+done
+
+virsh domifaddr --source agent "$VM" | grep enp | grep ipv4
