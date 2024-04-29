@@ -7,7 +7,7 @@ copyright = ('2023-2024, contributors to this project. "Noun Scroll 308110" by s
 author = 'Florenz <fl@hacker-stueberl.de> et al.'
 
 release = '1.0'
-version = '1.0.0a'
+version = '1.0.0'
 language = 'de'
 
 # -- General configuration
