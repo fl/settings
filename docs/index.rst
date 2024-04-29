@@ -32,5 +32,3 @@ Contents
 .. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
 .. _Teil des docutils-Pakets: https://docutils.sourceforge.io/index.html
 .. _Ziel: https://docutils.sourceforge.io/docs/ref/rst/introduction.html#goals
-
-https://docutils.sourceforge.io/rst.html

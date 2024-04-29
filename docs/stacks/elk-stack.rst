@@ -13,7 +13,7 @@ Der ELK-Stack wird so genannt, weil er anfangs bestand aus
 inzwischen sind auch andere Komponenten dazugekommen:
 
 * Beats
-* APM (jetzt um Observability genannt)
+* APM (jetzt Observability genannt)
 * Elastic Agent
 * Fleet
 * Elasticsearch ingest pipelines
@@ -66,7 +66,6 @@ jetzt haben wir den key lokal, aber "ascii armored", im PEM-Format::
 
     fl@sequoia:~$ cat GPG-KEY-elasticsearch
     -----BEGIN PGP PUBLIC KEY BLOCK-----
-
     mQENBFI3HsoBCADXDtbNJnxbPqB1vDNtCsqhe49vFYsZN9IOZsZXgp7aHjh6CJBD
     A+bGFOwyhbd7at35jQjWAw1O3cfYsKAmFy+Ar3LHCMkV3oZspJACTIgCrwnkic/9
     CUliQe324qvObU2QRtP4Fl0zWcfb/S8UYzWXWIFuJqMvE9MaRY1bwUBvzoqavLGZ
@@ -99,7 +98,7 @@ jetzt haben wir den key lokal, aber "ascii armored", im PEM-Format::
 
 damit APT ihn verwenden kann muessen wir ihn auspacken (=in das GPG-Keyring Format konvertieren)::
 
-    fl@sequoia:~gpg --dearmor < GPG-KEY-elasticsearch > elastic.co-APT-signingkey.gpg
+    fl@sequoia:~ gpg --dearmor < GPG-KEY-elasticsearch > elastic.co-APT-signingkey.gpg
 
 Mit gpg koennen wir den Inhalt kontrollieren::
 
@@ -121,8 +120,6 @@ package-Information auffrischen::
 
 mal nach Elastic suchen::
 
-Elastic-Pakete mit lokalem mirror bereitstellen
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 weil Elastic aus irgendwelchen Gruenden directory-index abgeschaltet hat, muessen wir erfinderisch werden, umd das repo zu spiegeln, damit wir es ohne proxy/internetz installieren koennen. Elastic gibt als repo URL selbst an: ``https://artifacts.elastic.co/packages/8.x/apt``. Nachdem wir die package-Struktur eines Debian repos kennen, bedeutet dies, dass wir ein ``Packages.gz`` fuer unsere Plattform finden unter ``<REPO-URL>/dists/stable/main/binary-amd64/Packages.gz``. Und genau damit probieren wir es:
 

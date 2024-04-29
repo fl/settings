@@ -14,11 +14,9 @@ But wait, there's more! `libvirt`_ kann noch mehr als nur das lokale Notebook st
 Vorbereitung
 ************
 
-Um das lokale Notebook (Debian 12) als Hypervisor verwenden zu koennen, installieren wir die Hypervisor- und client-software::
+Um das lokale Notebook (Debian 12) als QEMU-Hypervisor verwenden zu koennen, installieren wir die Hypervisor-Client-software und die dependencies.::
 
-    apt install virt-manager libvirt-clients-qemu
-
-und die dependencies.
+    apt install virt-manager libvirt-clients-qemu genisoimage
 
 Mit der Installation werden zwei neue Gruppen angelegt:
 
@@ -27,7 +25,7 @@ Mit der Installation werden zwei neue Gruppen angelegt:
 
 Der Benutzer, der virt-manager verwenden und sich am lokalen QEMU/KVM Hyoervisor anmelden will, muss in der Gruppe libvirt sein. Mit ``usermod`` passen wir als ``root`` die Gruppenzugehoerigkeit an::
 
-    isabell@stardust:~# usermod -G libvirt isabell
+    isabell@stardust:~# usermod -a -G libvirt isabell
     isabell@stardust:~# id isabell
     uid=1042(isabell) gid=1042(isabell) groups=1042(isabell),125(libvirt)
 
@@ -66,16 +64,54 @@ all diese Einstellungen kann man sowohl hier als auch mit *virsh* steuern. Um ei
 
 Durch das "Autoconnect" Haekchen in den connection details ist pro connection entry steuerbar ob bei jedem Start des virt-manager automatisch die Verbindung aufgebaut wird. Bei remote hosts ist da nicht immer gewuenscht, z.B. wenn man dazu erst ein VPN starten muss.
 
-****
-TODO
-****
+************************
+Hypervisor-Einstellungen
+************************
 
-* VM anlegen per virt-manager
-* VM anlegen per virsh (am einfachsten: im virt-manager anlegen, dann mit virsh das XML anzeigen und als Vorlage verwenden)
-* virtual disk anlegen
-* virtual disk mit "backing device" anlegen ("copy on write"), heisst bei libvirt `disk image chain`_
+=======================
+Virtual Machine Network
+=======================
 
+default: ``virbr0``
+Netzwerk 192.168.122.0/24, mit eigenem DHCP-Server fuer 192.168.122.2 - 192.168.122.254, verbunden mit dem host ueber ein (hiding) NAT gateway.
 
+=======================
+Virtual Machine Storage
+=======================
+
+default: pool /var/lib/libvirt/images, type directory
+
+Debian Cloud image
+^^^^^^^^^^^^^^^^^^
+
+Das Debian-Projekt stellt disk images zur Verfuegung, die ein vorinstalliertes Debian enthalten. Diese "cloud images" liegen nach Debian-Versionen sortiert https://cloud.debian.org/images/cloud/
+
+Fuer unsere Test-VMs verwenden wir images fuer bullseye (Debian 11) und bookworm (Debian 12)::
+
+    wget -c https://cloud.debian.org/images/cloud/bullseye/latest/debian-11-generic-amd64.qcow2
+
+    wget -c https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2
+
+Virtual disk mit "backing device"
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Fuer den storage der virtual machines verwenden wir virtual block devices, die fuer den Hypervisor ein file im storage pool sind, und von QEMU der VM als block device praesentiert werden. Damit wir identische blocks nur einmal speichern muessen, verwenden wir ein master image, und die "copy on write" (COW) Methode, sobald die VM einen blick auf dem device aendert und zurueckschreiben moechte. Es kann mehr als ein device geben, das read-only verwendet wird, zusammen ergeben sie die "backing chain". Wir beginnen mit einem device als "backing device"::
+
+    virsh vol-create-as \
+      "$POOL" "$DISK" \
+      10G \
+      --allocation 5G \
+      --format qcow2 \
+      --backing-vol "$BACKINGDISK" \
+      --backing-vol-format qcow2
+
+**********
+VM anlegen
+**********
+
+Mit ``create-debian.sh <Name der virtual machine>`` legen wir eine VM an. Unsere benutzerspezifischen Daten speichern wir im cloud-init Format, ``virt-install`` erstellt daraus ein ISO-Image und haengt es beim ersten Start an die VM an.
+
+.. Links
 .. _virt-manager: https://virt-manager.org
 .. _libvirt: https://libvirt.org
 .. _unterstuetzten Hypervisor-Software: https://libvirt.org/drivers.html#hypervisor-drivers
