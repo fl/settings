@@ -3,7 +3,7 @@
 # -- Project information
 
 project = 'Settings'
-copyright = '2023-2024, contributors to this project'
+copyright = ('2023-2024, contributors to this project. "Noun Scroll 308110" by stefano corradetti licensed under CC BY 4.0.')
 author = 'Florenz <fl@hacker-stueberl.de> et al.'
 
 release = '1.0'
@@ -32,6 +32,7 @@ templates_path = ['_templates']
 # -- Options for HTML output
 
 html_theme = 'sphinx_rtd_theme'
+html_logo = 'scroll.svg'
 
 # Sphinx RTD theme options. Docs at https://sphinx-rtd-theme.readthedocs.io/en/stable/index.html
 html_theme_options = {
