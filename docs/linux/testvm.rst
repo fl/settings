@@ -109,7 +109,39 @@ Fuer den storage der virtual machines verwenden wir virtual block devices, die f
 VM anlegen
 **********
 
-Mit ``create-debian.sh <Name der virtual machine>`` legen wir eine VM an. Unsere benutzerspezifischen Daten speichern wir im cloud-init Format, ``virt-install`` erstellt daraus ein ISO-Image und haengt es beim ersten Start an die VM an.
+Mit dem GUI ``virt-manager`` zu arbeiten wir schnell viel Geklicke. Weil der ``virt-manager`` wie beschrieben nur Funktionen der ``libvirt`` aufruft, koennen wir dasselbe Ziel auch mit Hilfe von Skript-gesteuerten Aufrufen erreichen. Ein Beispiel ist das Skript ``scripts/create-debian.sh``. Mit seiner Hilfe automatisieren wir das Anlegen von virtuellen Maschinen:
+
+#. hostnamen setzen und im cloud-init format speichern
+#. eine cloud-init-konformes ISO-Image zur initialen Konfiguration erzeugen
+#. eine virtuelle Disk anlegen
+#. eine neue virtuelle Maschine mit ISO und vHD starten
+#. nachdem die VM gestartet ist, die (automatisch vergebene) Netzwerk-Adresse anzeigen
+
+============
+Cloud images
+============
+
+Damit das Starten der VM schneller geht, verwenden wir ein disk image mit einem vorinstallierten Linux. Diese Art der Bereitstellung ist inzwischen Standard, sowohl bei Cloud-Anbietern wie AWS, Google, Azure die ihre Infrastruktur ueber API-Aufrufe und Web-Interfaces zugaenglich machen, als auch in der Welt der selbst betriebenen kommerziellen (vSphere, Nutanix) oder free software Virtualisierungs-Stacks (OpenStack, Proxmox VE).
+
+============================
+Konfiguration mit cloud-init
+============================
+
+Um die vorinstallierten cloud images beim Start an unsere Beduerfniss anzupassen, verwenden wir `cloud-init`_. Es definiert eine Anzahl von Steuerbefehlen, die auf unterschiedliche Weise an eine VM uebermittelt werden koenne. Hat die VM das client-seitige cloud-init Softwarepaket installiert, werden diese Kanaele abgefragt, und empfangene Konfigurationsanweisungen umgesetzt. Einen Ueberblick gibt die `cloud-init Einfuehrung`_.
+
+Wir verwenden ein cloud-init `config drive`_ als cloud-init Datenquelle (data source). Unsere Konfigurationsanweisungen speichern wir in den files meta-data und user-data im JSON-Format, und erstellen daraus ein ISO-Image, das wir der VM als virtuelles CDROM Laufwerk unterschieben.
+
+===============================================
+VM Anlegen und starten mit ``create-debian.sh``
+===============================================
+
+Mit ``create-debian.sh <Name>`` legen wir eine neuen VM namens ``Name`` an. Das Skript hat keine Fehlerbehandlung - wenn bereits ein namensgleiches Volume existiert, oder eine VM mit diesem Namen, brechen die Komanndos mit Fehlermeldungen ab. Nachdem die VM angelegt ist, wartet das Skript die in der Variable ``TIMER`` gespeicherte Anzahl Sekunden, und ruft dann den qemu-guest-agent auf, um die (automatisch per DHCP erhaltene) IP-Adresse der VM abzufragen.
+
+==============================
+Zustand anziegen mit ``virsh``
+==============================
+
+Alle laufenden VMs zeigt man mit ``virsh list`` an. Um gestoppte VMs auch anzuzeigen, erweitert man den Befehl um die die Option "alle bitte" ``virsh list --all``.
 
 .. Links
 .. _virt-manager: https://virt-manager.org
@@ -117,3 +149,6 @@ Mit ``create-debian.sh <Name der virtual machine>`` legen wir eine VM an. Unsere
 .. _unterstuetzten Hypervisor-Software: https://libvirt.org/drivers.html#hypervisor-drivers
 .. _vCenter fernzusteuern: https://libvirt.org/drvesx.html
 .. _disk image chain: https://libvirt.org/kbase/backing_chains.html
+.. _cloud-init: https://cloudinit.readthedocs.io/
+.. _cloud-init Einfuehrung: https://cloudinit.readthedocs.io/en/latest/explanation/introduction.html#introduction
+.. _config drive: https://cloudinit.readthedocs.io/en/latest/reference/datasources/configdrive.html
