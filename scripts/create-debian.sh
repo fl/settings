@@ -5,7 +5,12 @@ POOLDIR="/usr/local/var/vmstore"
 #BACKINGDISK="$POOLDIR/debian-11-genericcloud-amd64.qcow2"
 BACKINGDISK="$POOLDIR/debian-11-generic-amd64.qcow2"
 
-VM="$1"
+if [ -z "$1" ]; then
+  VM="debian11"
+else
+  VM="$1"
+fi
+
 DISK="$VM.qcow2"
 CLOUDINITISO="$VM.cloudinit.iso"
 
