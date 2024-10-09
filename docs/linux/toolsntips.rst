@@ -61,3 +61,29 @@ In der laufenden Shell (PID 9916) ruft der Benutzer swadm ``screen`` auf. Als er
     swadm@cornus:~$ echo $$
     9916
     swadm@cornus:~$
+
+certificates
+
+Zertifikate
+
+
+Anwendungsfaelle
+
+Inhalt eines Zertifikats untersuchen
+
++ ist das file plaintext oder binary?
+
+plaintext:
+hat das file einen "wrapper"
+
+wrapper:
+welcher Typ?
+
+CERTIFICATE
+
+Darstellung von Dateien
+
+Binaerdateien koennen als plaintext dargestellt werden mit Hilfe von base64 encoding (RFC  4648)
+
+Dadurch kann man beliebige Inhalte in Textform uebertragen
+

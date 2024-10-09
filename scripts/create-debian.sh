@@ -2,8 +2,8 @@
 
 POOL="vmstore"
 POOLDIR="/usr/local/var/vmstore"
-#BACKINGDISK="$POOLDIR/debian-11-genericcloud-amd64.qcow2"
-BACKINGDISK="$POOLDIR/debian-11-generic-amd64.qcow2"
+BACKINGDISK="$POOLDIR/debian-11-genericcloud-amd64.qcow2"
+#BACKINGDISK="$POOLDIR/debian-12-generic-amd64.qcow2"
 
 if [ -z "$1" ]; then
   VM="debian11"
@@ -34,8 +34,13 @@ virt-install \
   --connect=qemu:///system \
   --name="$VM" \
   --os-variant debian11 \
+<<<<<<< Updated upstream
   --ram=1024 \
   --vcpus=2 \
+=======
+  --ram=512 \
+  --vcpus=1 \
+>>>>>>> Stashed changes
   --import \
   --disk "$POOLDIR/$DISK" \
   --disk path="$POOLDIR/$CLOUDINITISO",device=cdrom \

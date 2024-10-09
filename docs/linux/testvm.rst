@@ -32,7 +32,7 @@ Der Benutzer, der virt-manager verwenden und sich am lokalen QEMU/KVM Hyoervisor
 Die Gruppenzugehoerigkeit wird bei der Anmeldung festgelegt, deswegen jetzt von der Desktop-Session einmal abmelden und wieder anmelden, dann sollte die neue Gruppe sichtbar sein, z.B. in einem gestarteten Terminal.
 
 *********************************
-Virtualisierungs-GUI virt-manager
+GUI: virt-manager
 *********************************
 
 ====================
@@ -64,6 +64,10 @@ all diese Einstellungen kann man sowohl hier als auch mit *virsh* steuern. Um ei
 
 Durch das "Autoconnect" Haekchen in den connection details ist pro connection entry steuerbar ob bei jedem Start des virt-manager automatisch die Verbindung aufgebaut wird. Bei remote hosts ist da nicht immer gewuenscht, z.B. wenn man dazu erst ein VPN starten muss.
 
+**********
+CLI: virsh
+**********
+
 ************************
 Hypervisor-Einstellungen
 ************************
@@ -79,7 +83,14 @@ Netzwerk 192.168.122.0/24, mit eigenem DHCP-Server fuer 192.168.122.2 - 192.168.
 Virtual Machine Storage
 =======================
 
-default: pool /var/lib/libvirt/images, type directory
+Storage Pool anlegen
+^^^^^^^^^^^^^^^^^^^^
+
+Storage pools enthalten Objekte, die den VMs als block devices gezeigt werden. Storage pools koennen ganz unterschiedliche Typen haben: raw devices, LUNs, LVM volume groups, oder auch directories. Je nach Typ werden die virtual disks in unterschiedlichen Formaten gespeichert. Wir legen uns einen storage pool vom Type ``dir`` (Verzeichnis im filesystem) an::
+
+    virsh pool-create-as --source-path /usr/local/var/vmstore --target /usr/local/var/vmstore vmstore dir
+
+In diesem storage pool werden wir die virtual disks als files anlegen, und sie dann den VMs als (virtual) block devices zeigen.
 
 Debian Cloud image
 ^^^^^^^^^^^^^^^^^^
