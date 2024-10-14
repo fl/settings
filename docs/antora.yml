@@ -1,0 +1,11 @@
+title: Settings for various things
+name: settings
+version: ~
+nav:
+  - modules/ROOT/nav.adoc
+asciidoc:
+  attributes:
+    page-pagination: ''
+    experimental: ''
+    idprefix: ''
+    idseparator: '-'
