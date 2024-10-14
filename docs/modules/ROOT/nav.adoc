@@ -1,1 +1,5 @@
 * xref:index.adoc[]
+** xref:linux/testvm.adoc[]
+** xref:linux/toolsntips.adoc[]
+** xref:stacks/elk-stack.adoc[]
+** xref:stacks/caching-proxy.adoc[]
