@@ -1,3 +1,4 @@
 # Python 3.12.2
-Sphinx==7.2.6
-sphinx_rtd_theme==2.0.0
+Sphinx==8.2.3
+sphinx_rtd_theme==3.0.2
+sphinx-autobuild==2025.8.25
