@@ -3,7 +3,7 @@
 # -- Project information
 
 project = 'Settings'
-copyright = ('2023-2024, contributors to this project. "Noun Scroll 308110" by stefano corradetti licensed under CC BY 4.0.')
+copyright = ('Contributors to this project. "Noun Scroll 308110" by stefano corradetti licensed under CC BY 4.0.')
 author = 'Florenz <fl@hacker-stueberl.de> et al.'
 
 release = '1.0'
@@ -36,20 +36,21 @@ html_logo = 'scroll.svg'
 
 # Sphinx RTD theme options. Docs at https://sphinx-rtd-theme.readthedocs.io/en/stable/index.html
 html_theme_options = {
-    # 'analytics_id': 'G-XXXXXXXXXX',  #  Provided by Google in your dashboard
-    # 'analytics_anonymize_ip': False,
-    'logo_only': False,
-    'display_version': True,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': False,
-    'vcs_pageview_mode': '',
-    'style_nav_header_background': 'white',
+    'logo_only': False
+    , 'display_version': True
+    , 'prev_next_buttons_location': 'bottom'
+    , 'style_external_links': True
+    , 'vcs_pageview_mode': ''
+    , 'style_nav_header_background': 'white'
     # Toc options
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    'navigation_depth': 4,
-    'includehidden': True,
-    'titles_only': False
+    , 'collapse_navigation': True
+    , 'sticky_navigation': True
+    , 'navigation_depth': 4
+    , 'includehidden': True
+    , 'titles_only': False
+    # more misc. settings
+    , 'html_baseurl': 'https://settings.readthedocs.io/'
+    , ' language_selector': False
 }
 
 # -- Options for EPUB output
