@@ -1,12 +1,12 @@
 Settings
 ========
 
-Einstellungen fuer Anwendungen und Betriebssysteme in allen Formen und Farben. Standard fuer die Linux-Beispiele ist Debian 12 "Bullseye" fuer amd64, OS-Sprache Englisch. Tastaturbelegung? Das darf man wirklich so machen wie man es am liebsten mag. Just saying' - meine persoenliche Vorliebe fuer das us-en Layout hat `Gruende`_.
+Dieses Projekt sammelt Artikel zu Einstellungen für Anwendungen und Betriebssysteme in allen Formen und Farben. Standard für die Linux-Beispiele ist Debian GNU/Linux, OS-Sprache Englisch. Tastaturbelegung? Das darf man wirklich so machen wie man es am liebsten mag. Just saying' - meine persönliche Vorliebe fuer das us-en Layout hat `Gründe`_ .
 
-Die Dokumente werden im Verzeichnis docs abgelegt, und im Format `reStructuredText`_ (reST) geschrieben, der Sprache die z.B. die Projekte Python und Sphinx als Standard fuer Dokumentation verwenden. Der reST-Parser ist `Teil des docutils-Pakets`_. Das `Ziel`_ von reST ist es, eine Syntax zu definieren, mit der in (lesbaren) Plaintext-Dokumenten Struktur beschrieben wird, die mit Hilfe von Generatoren automatisch in andere Formate uebersetzt werden kann. Konvention ist, den reST-Dokumenten die Dateierweiterung ``.rst`` zu geben (der Parser verarbeitet Dokumente mit beliebigen Dateierweiterungen).
+Die Dokumente werden im Format `reStructuredText`_ (reST) geschrieben und mit  `Sphinx`_ in eine statische Webseite übersetzt. Das ist im Artikel `Mit Sphinx dokumentieren`_ beschrieben.
 
-Contents
---------
+Bereits verfügbare Artikel:
+
 .. toctree::
    :caption: Application stacks
    :maxdepth: 1
@@ -28,7 +28,9 @@ Contents
 
    windows/*
 
-.. _Gruende: https://youtrack.jetbrains.com/issue/JBR-216/On-German-Keyboard-shortcut-for-Code-Comment-with-Line-Comment-doesnt-work
+.. _Gründe: https://youtrack.jetbrains.com/issue/JBR-216/On-German-Keyboard-shortcut-for-Code-Comment-with-Line-Comment-doesnt-work
 .. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
 .. _Teil des docutils-Pakets: https://docutils.sourceforge.io/index.html
-.. _Ziel: https://docutils.sourceforge.io/docs/ref/rst/introduction.html#goals
+.. _Ziel von reST: https://docutils.sourceforge.io/docs/ref/rst/introduction.html#goals
+.. _Sphinx: https://www.sphinx-doc.org/
+.. _Mit Sphinx dokumentieren: stacks/sphinx-doc.html
