@@ -1,0 +1,23 @@
+== Settings
+
+Dieses Projekt sammelt Artikel zu Einstellungen für Anwendungen und
+Betriebssysteme in allen Formen und Farben. Standard für die
+Linux-Beispiele ist Debian GNU/Linux, OS-Sprache Englisch.
+Tastaturbelegung? Das darf man wirklich so machen wie man es am liebsten
+mag. Just saying' - meine persönliche Vorliebe fuer das us-en Layout hat
+https://youtrack.jetbrains.com/issue/JBR-216/On-German-Keyboard-shortcut-for-Code-Comment-with-Line-Comment-doesnt-work[Gründe]
+.
+
+Die Dokumente werden im Format
+https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html[reStructuredText]
+(reST) geschrieben und mit https://www.sphinx-doc.org/[Sphinx] in eine
+statische Webseite übersetzt. Das ist im Artikel
+link:stacks/sphinx-doc.html[Mit Sphinx dokumentieren] beschrieben.
+
+Bereits verfügbare Artikel:
+
+stacks/*
+
+linux/*
+
+windows/*

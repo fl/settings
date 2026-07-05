@@ -1,0 +1,10 @@
+name: settings
+title: Settings
+version: 1.0.0
+start_page: inhalt.adoc
+asciidoc:
+  attributes:
+    source-language: asciidoc@
+    table-caption: false
+nav:
+- modules/ROOT/nav.adoc
