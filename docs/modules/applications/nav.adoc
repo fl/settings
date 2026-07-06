@@ -1,3 +1,4 @@
-* xref:caching-proxy.adoc[]
-* xref:elk-stack.adoc[]
-* xref:sphinx-doc.adoc
+* xref:applications.adoc[]
+** xref:caching-proxy.adoc[]
+** xref:elk-stack.adoc[]
+** xref:sphinx-doc.adoc[]

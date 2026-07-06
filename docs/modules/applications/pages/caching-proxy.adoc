@@ -1,4 +1,6 @@
-== Caching Proxy um traffic zu sparen
+= Caching Proxy
+
+um traffic zu sparen
 
 === Squid installieren + konfigurieren
 

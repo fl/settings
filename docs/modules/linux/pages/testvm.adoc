@@ -1,4 +1,4 @@
-== Virtual machines als Testumgebung
+= Virtual machines als Testumgebung
 
 Damit wir unsere eigene Maschine nicht mit Tests und Versuchen
 kaputt-konfigurieren, und damit die Tests jeweils von einer stabilen,

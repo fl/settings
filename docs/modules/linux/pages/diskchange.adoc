@@ -1,4 +1,4 @@
-== Platten wechseln im ZFS-Pool
+= Platten wechseln im ZFS-Pool
 
 Wenn Platten akputt gehen, muss man sie auswechseln. Wenn sie an einem
 RAID-Controller hängen, kümmert der sich drum, wenn aber den Controller
