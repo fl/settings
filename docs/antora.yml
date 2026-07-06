@@ -1,10 +1,12 @@
 name: settings
-title: Settings
 version: 1.0.0
-start_page: inhalt.adoc
+title: Tips und Tricks
+start_page: index.adoc
 asciidoc:
   attributes:
     source-language: asciidoc@
     table-caption: false
 nav:
 - modules/ROOT/nav.adoc
+- modules/applications/nav.adoc
+- modules/linux/nav.adoc
