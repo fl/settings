@@ -1,7 +1,6 @@
 name: settings
 version: 1.0.0
 title: Tips und Tricks
-start_page: settings::settings.adoc
 asciidoc:
   attributes:
     source-language: asciidoc@
