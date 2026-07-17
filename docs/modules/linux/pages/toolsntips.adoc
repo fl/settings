@@ -1,4 +1,4 @@
-= Linux Tools & Tips
+== Linux Tools & Tips
 
 === In the beginning was the Command Line
 
