@@ -1,5 +1,5 @@
 name: settings
-version: 1.0.0
+version: development
 title: Tips und Tricks
 start_page: settings::settings.adoc
 asciidoc:
